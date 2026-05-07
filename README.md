@@ -1,3 +1,6 @@
+Status do Projeto
+Este sistema encontra-se em fase de desenvolvimento ativo. A arquitetura atual estabelece a base fundamental de segurança e agendamento, estando previstas futuras atualizações para maximizar as funcionalidades de gestão e relatórios.
+
 Projeto API de Agendamento
 
 Este repositório contém uma interface de programação de aplicações (API) desenvolvida para a gestão de agendamentos de serviços. O sistema foi concebido utilizando o framework FastAPI, priorizando a performance, a validação de dados e a segurança das operações.
