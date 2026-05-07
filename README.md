@@ -1,4 +1,5 @@
 Status do Projeto
+
 Este sistema encontra-se em fase de desenvolvimento ativo. A arquitetura atual estabelece a base fundamental de segurança e agendamento, estando previstas futuras atualizações para maximizar as funcionalidades de gestão e relatórios.
 
 Projeto API de Agendamento
