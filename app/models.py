@@ -21,6 +21,7 @@ class Agendamento(Base):
     servico_id = Column(Integer, ForeignKey("servicos.id"))
     servico = relationship("Servico")
     preco_pago = Column(Float, nullable=False)
+    status = Column(String, nullable=True, default="confirmado")
 
 
 class Servico(Base):
