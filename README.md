@@ -31,6 +31,9 @@ Tecnologias Utilizadas
 
     Passlib (Hashing de senhas com algoritmos seguros)
 
+## Estrutura do Projeto
+
+```text
 projetoapi/
 ├── app/
 │   ├── __init__.py
@@ -39,9 +42,10 @@ projetoapi/
 │   ├── schemas.py       # Modelos de validação e serialização (Pydantic)
 │   ├── database.py      # Configuração da conexão e sessão do banco de dados
 │   └── utils.py         # Funções auxiliares para hashing e segurança JWT
-├── .gitignore           # Arquivos e pastas ignorados pelo Git (venv, db, pycache)
+├── .gitignore           # Arquivos e pastas ignorados pelo Git
 ├── requirements.txt     # Lista de dependências do projeto
 └── README.md            # Documentação do sistema
+\```
 
     Clonar o repositório:
     git clone https://github.com/H1lbert-kt/projetoapi.git
