@@ -31,18 +31,17 @@ Tecnologias Utilizadas
 
     Passlib (Hashing de senhas com algoritmos seguros)
 
-Estrutura do Projeto
-
-.
+projetoapi/
 ├── app/
-│   ├── main.py          # Inicialização da API e definição de endpoints
-│   ├── models.py        # Mapeamento das tabelas do banco de dados
-│   ├── schemas.py       # Modelos de dados para entrada e saída (Pydantic)
-│   ├── database.py      # Configuração do motor e sessões do SQLAlchemy
-│   └── utils.py         # Lógica de criptografia e geração/verificação de tokens
-├── requirements.txt     # Listagem de dependências do ambiente
-└── README.md            # Documentação do projeto
-Instruções para Execução
+│   ├── __init__.py
+│   ├── main.py          # Entrypoint da API e definição das rotas
+│   ├── models.py        # Definição das tabelas do banco de dados (SQLAlchemy)
+│   ├── schemas.py       # Modelos de validação e serialização (Pydantic)
+│   ├── database.py      # Configuração da conexão e sessão do banco de dados
+│   └── utils.py         # Funções auxiliares para hashing e segurança JWT
+├── .gitignore           # Arquivos e pastas ignorados pelo Git (venv, db, pycache)
+├── requirements.txt     # Lista de dependências do projeto
+└── README.md            # Documentação do sistema
 
     Clonar o repositório:
     git clone https://github.com/H1lbert-kt/projetoapi.git
