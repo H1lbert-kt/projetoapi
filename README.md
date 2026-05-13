@@ -67,6 +67,3 @@ projetoapi/
     uvicorn app.main:app --reload
 
 A documentação Swagger estará disponível em: http://127.0.0.1:8000/docs
-Decisões Técnicas
-
-Uma decisão central na arquitetura deste sistema foi a persistência do preço no momento do agendamento (campo preco_pago). Diferente de apenas referenciar o preço atual do serviço, esta abordagem garante a imutabilidade do registro financeiro histórico. Caso o valor de um serviço seja reajustado futuramente, os registros de agendamentos realizados anteriormente não sofrerão alterações indevidas, garantindo relatórios precisos.
