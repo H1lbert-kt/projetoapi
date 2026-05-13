@@ -1,57 +1,69 @@
-Status do Projeto
+Sistema de Agendamento de Serviços (API)
 
-Este sistema encontra-se em fase de desenvolvimento ativo. A arquitetura atual estabelece a base fundamental de segurança e agendamento, estando previstas futuras atualizações para maximizar as funcionalidades de gestão e relatórios.
+Este projeto consiste em uma API REST desenvolvida com FastAPI para a gestão de agendamentos de serviços. O sistema foi projetado para atender tanto clientes, que podem gerenciar suas próprias reservas, quanto administradores, que possuem controle sobre o catálogo de serviços e a base de usuários.
+Principais Funcionalidades
 
-Projeto API de Agendamento
+    Autenticação e Segurança: Implementação de fluxo OAuth2 com JWT (JSON Web Tokens) para proteção de rotas.
 
-Este repositório contém uma interface de programação de aplicações (API) desenvolvida para a gestão de agendamentos de serviços. O sistema foi concebido utilizando o framework FastAPI, priorizando a performance, a validação de dados e a segurança das operações.
+    Gestão de Serviços: CRUD completo para administração de serviços com suporte a Soft Delete (desativação lógica para preservação de integridade referencial).
 
-Visão Geral
+    Validações de Agendamento:
 
-A solução permite o gerenciamento completo de fluxos de trabalho, incluindo o cadastro de usuários, a definição de serviços disponíveis e a reserva de horários. A aplicação implementa regras de negócio que impedem agendamentos duplicados no mesmo intervalo e bloqueia registros em datas retroativas.
+        Impedimento de reservas em datas ou horários passados.
+
+        Restrição de funcionamento apenas para horário comercial definido (08:00 às 20:00).
+
+        Verificação dupla de conflitos: impede que um serviço seja reservado por dois clientes no mesmo horário e que um único cliente possua agendamentos simultâneos.
+
+    Controle de Acesso (RBAC): Middleware de dependências para separar permissões de usuários comuns e administradores.
 
 Tecnologias Utilizadas
 
-    Linguagem: Python 3.13
+    Python 3.10+
 
-    Framework: FastAPI
+    FastAPI (Framework Web)
 
-    ORM: SQLAlchemy
+    SQLAlchemy (ORM para persistência de dados)
 
-    Banco de Dados: SQLite
+    Pydantic (Validação de dados e Schemas)
 
-    Segurança: Autenticação JWT e Criptografia Bcrypt
+    SQLite (Banco de dados relacional local)
 
-    Validação: Pydantic
+    Passlib (Hashing de senhas com algoritmos seguros)
 
 Estrutura do Projeto
 
-    app/main.py: Ponto de entrada da aplicação e definição das rotas.
+.
+├── app/
+│   ├── main.py          # Inicialização da API e definição de endpoints
+│   ├── models.py        # Mapeamento das tabelas do banco de dados
+│   ├── schemas.py       # Modelos de dados para entrada e saída (Pydantic)
+│   ├── database.py      # Configuração do motor e sessões do SQLAlchemy
+│   └── utils.py         # Lógica de criptografia e geração/verificação de tokens
+├── requirements.txt     # Listagem de dependências do ambiente
+└── README.md            # Documentação do projeto
+Instruções para Execução
 
-    app/models.py: Mapeamento das tabelas e entidades do banco de dados.
-
-    app/schemas.py: Definição dos contratos de entrada e saída de dados.
-
-    app/database.py: Configuração da infraestrutura de persistência.
-
-    app/utils.py: Lógica auxiliar de segurança e geração de tokens.
-
-Procedimentos de Instalação
-
-    Clonar o Repositório
+    Clonar o repositório:
     git clone https://github.com/H1lbert-kt/projetoapi.git
     cd projetoapi
 
-    Ambiente Virtual
+    Configurar o ambiente virtual:
     python -m venv venv
-    (Ative o ambiente de acordo com seu sistema operacional)
+    No Windows:
 
-    Dependências
+    venv\Scripts\activate
+    No Linux/Mac:
+
+    source venv/bin/activate
+
+    Instalar as dependências:
     pip install -r requirements.txt
 
-    Execução do Servidor
+    Iniciar a aplicação:
     uvicorn app.main:app --reload
 
-Documentação Interativa
+A documentação Swagger estará disponível em: http://127.0.0.1:8000/docs
+Decisões Técnicas
 
-Após iniciar o servidor, a documentação completa dos endpoints, incluindo exemplos de requisição e esquemas de dados, estará disponível no endereço local: http://127.0.0.1:8000/docs
+Uma decisão central na arquitetura deste sistema foi a persistência do preço no momento do agendamento (campo preco_pago). Diferente de apenas referenciar o preço atual do serviço, esta abordagem garante a imutabilidade do registro financeiro histórico. Caso o valor de um serviço seja reajustado futuramente, os registros de agendamentos realizados anteriormente não sofrerão alterações indevidas, garantindo relatórios precisos.
