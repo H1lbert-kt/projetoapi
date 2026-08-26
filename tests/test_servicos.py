@@ -3,11 +3,11 @@ import pytest
 @pytest.fixture
 def obter_headers(cliente):
     cliente.post("/usuarios/", json={
-        "nome": "user comum", "email": "dev@teste.com", "senha": "123"
+        "nome": "user comum", "email": "dev@teste.com", "senha": "123456"
     })
     res = cliente.post("/login", data={
         "username": "dev@teste.com",
-        "password": "123"
+        "password": "123456"
     })
     token = res.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
@@ -42,3 +42,16 @@ def test_criar_agendamento_token_invalido_falha(cliente):
 
     assert response.status_code == 401
     assert response.json()["detail"] == "Token inválido."
+
+def test_criar_servico_como_admin(cliente, headers_admin):
+    payload_servico = {
+        "nome": "corte de cabelo",
+        "preco": 50.0
+    }
+    response = cliente.post("/servicos/", json=payload_servico, headers=headers_admin)
+
+    assert response.status_code == 200
+    dados  = response.json()
+    assert dados["nome"] == "corte de cabelo"
+    assert dados["preco"] == 50.0
+    assert "id" in dados
