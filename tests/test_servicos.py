@@ -55,3 +55,13 @@ def test_criar_servico_como_admin(cliente, headers_admin):
     assert dados["nome"] == "corte de cabelo"
     assert dados["preco"] == 50.0
     assert "id" in dados
+
+def test_criar_servico_bloqueado_usuario_comum(cliente, headers_usuario_comum):
+    payload_servico = {
+        "nome": "corte de cabelo",
+        "preco": 50.0
+    }
+    response = cliente.post("/servicos/", json=payload_servico, headers=headers_usuario_comum)
+
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Operação restrita a administradores."
