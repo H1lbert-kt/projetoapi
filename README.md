@@ -159,16 +159,4 @@ pip install -r requirements.txt
 pytest --cov=app tests/
 ```
 
----
-
-## Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
----
-
-<div align="center">
-
-Feito com dedicação por [H1lbert-kt](https://github.com/H1lbert-kt)
-
 </div>
