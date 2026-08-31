@@ -153,9 +153,9 @@ def agendamento(
     db.refresh(novo)
     return novo
 
-@app.post("/agendamento/cancelar/", response_model=schemas.AgendamentoOut, tags=["Operações"])
-def cancelar_agendamento(agendameto_id: int, db: Session = Depends(get_db), usuario_atual = Depends(obter_usuario)):
-    buscar_agendamento = db.query(models.Agendamento).filter(models.Agendamento.id == agendameto_id).first()
+@app.post("/agendamento/cancelar/{agendamento_id}", response_model=schemas.AgendamentoOut, tags=["Operações"])
+def cancelar_agendamento(agendamento_id: int, db: Session = Depends(get_db), usuario_atual = Depends(obter_usuario)):
+    buscar_agendamento = db.query(models.Agendamento).filter(models.Agendamento.id == agendamento_id).first()
     if not buscar_agendamento:
         raise HTTPException(
             status_code=404,

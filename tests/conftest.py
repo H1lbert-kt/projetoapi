@@ -73,3 +73,15 @@ def headers_admin(cliente, db_session):
     res = cliente.post("/login", data={"username": "dev@teste.com", "password": "123456"})
     token = res.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
+
+@pytest.fixture
+def servico_valido(db_session):
+    novo_servico = models.Servico(
+        nome="corte de cabelo",
+        preco=50.0,
+        ativo=True
+    )
+    db_session.add(novo_servico)
+    db_session.commit()
+    db_session.refresh(novo_servico)
+    return novo_servico
