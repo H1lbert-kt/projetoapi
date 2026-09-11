@@ -42,7 +42,7 @@ def verificar_admin(usuario_atual: models.User = Depends(obter_usuario)):
 def login(login_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     usuario = db.query(models.User).filter(models.User.email == login_data.username).first()
     if not usuario:
-        raise HTTPException(status_code=401, detail="Email ou senha incorretos.")
+        raise HTTPException(status_code=401, detail="Email ou senha inválidos.")
     
     senha_valida = verificar_senha(login_data.password, usuario.senha)
     if not senha_valida:
@@ -124,7 +124,8 @@ def agendamento(
     
     conflito = db.query(models.Agendamento).filter(
         models.Agendamento.servico_id == agendamento_in.servico_id,
-        models.Agendamento.data == agendamento_in.data
+        models.Agendamento.data == agendamento_in.data,
+        models.Agendamento.status == "confirmado"
     ).first()
     
     if conflito:
@@ -153,13 +154,13 @@ def agendamento(
     db.refresh(novo)
     return novo
 
-@app.post("/agendamento/cancelar/{agendamento_id}", response_model=schemas.AgendamentoOut, tags=["Operações"])
+@app.post("/agendamentos/cancelar/{agendamento_id}", response_model=schemas.AgendamentoOut, tags=["Operações"])
 def cancelar_agendamento(agendamento_id: int, db: Session = Depends(get_db), usuario_atual = Depends(obter_usuario)):
     buscar_agendamento = db.query(models.Agendamento).filter(models.Agendamento.id == agendamento_id).first()
     if not buscar_agendamento:
         raise HTTPException(
             status_code=404,
-            detail="Agendamento não encontrado"
+            detail="Agendamento não encontrado."
         )
     
     if usuario_atual.id != buscar_agendamento.usuario_id and not usuario_atual.is_admin:

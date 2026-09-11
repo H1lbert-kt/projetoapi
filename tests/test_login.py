@@ -46,5 +46,5 @@ def test_login_usuario_inexistente(cliente):
     response = cliente.post("/login", data=payload_login)
 
     assert response.status_code == 401
-    assert "Email ou senha incorretos" in response.json()["detail"]
+    assert "Email ou senha inválidos." in response.json()["detail"]
 

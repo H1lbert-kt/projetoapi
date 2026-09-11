@@ -75,7 +75,7 @@ def test_dono_cancela_seu_proprio_agendamento(cliente, headers_usuario_comum, se
     agendamento_id = res_agendamento.json()["id"]
 
     res_cancelar = cliente.post(
-        f"/agendamento/cancelar/{agendamento_id}",
+        f"/agendamentos/cancelar/{agendamento_id}",
         headers=headers_usuario_comum
     )
 

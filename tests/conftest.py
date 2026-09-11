@@ -63,14 +63,14 @@ def headers_usuario_comum(cliente, db_session):
 def headers_admin(cliente, db_session):
     user = models.User(
         nome="User comum",
-        email="dev@teste.com",
+        email="admin@teste.com",
         senha=gerar_hash("123456"),
         is_admin=True
     )
     db_session.add(user)
     db_session.commit()
     
-    res = cliente.post("/login", data={"username": "dev@teste.com", "password": "123456"})
+    res = cliente.post("/login", data={"username": "admin@teste.com", "password": "123456"})
     token = res.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
 

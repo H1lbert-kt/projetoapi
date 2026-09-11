@@ -15,18 +15,33 @@
 
 ## Sobre o projeto
 
+<<<<<<< HEAD
 API REST para gerenciar agendamentos de barbearia. Permite cadastro de usuários, autenticação via JWT, catálogo de serviços com CRUD e agendamentos com validações de horário, conflitos e permissões.
+=======
+Esse projeto nasceu da necessidade de criar uma API REST moderna e segura para gerenciar agendamentos de barbearia. Aqui você encontra cadastro de usuários, autenticação via JWT, catálogo de serviços com CRUD completo e agendamentos com validações inteligentes (horário comercial, conflitos de agenda, etc.).
+
+Tudo pensado para ser **fácil de rodar** (um único comando Docker) e **seguro de verdade** (Argon2id para senhas, controle de acesso por roles).
+>>>>>>> da1d5d19bf44e9a04828853f112160f82fe71e02
 
 ---
 
 ## Funcionalidades
 
+<<<<<<< HEAD
 - **Autenticação JWT** — Login com tokens de expiração configurável
 - **Controle de acesso** — Dois níveis: usuários comuns e administradores
 - **CRUD de serviços** — Administradores criam e desativam serviços (soft-delete)
 - **Agendamento inteligente** — Valida horário comercial (08h-20h), impede passado e detecta conflitos
 - **Cancelamento seguro** — Somente o dono ou um admin pode cancelar
 - **Preço congelado** — Valor registrado no momento do agendamento
+=======
+- **Autenticação JWT** — Login seguro com tokens de expiração configurável
+- **Controle de acesso** — Usuários comuns e administradores com permissões distintas
+- **CRUD de serviços** — Administradores podem criar e desativar serviços
+- **Agendamento inteligente** — Valida horário comercial (08h às 20h), impede agendamentos no passado e detecta conflitos de horário
+- **Cancelamento seguro** — Somente o dono do agendamento ou um admin pode cancelar
+- **Soft-delete** — Serviços são desativados, não removidos do banco
+>>>>>>> da1d5d19bf44e9a04828853f112160f82fe71e02
 
 ---
 
@@ -38,7 +53,11 @@ API REST para gerenciar agendamentos de barbearia. Permite cadastro de usuários
 | Framework | FastAPI |
 | ORM | SQLAlchemy 2.0 |
 | Banco de dados | PostgreSQL 15 (Docker) / SQLite (local) |
+<<<<<<< HEAD
 | Senhas | Argon2id |
+=======
+| Senhas | Argon2id (OWASP-recommended) |
+>>>>>>> da1d5d19bf44e9a04828853f112160f82fe71e02
 | Autenticação | JWT via python-jose |
 | Validação | Pydantic v2 |
 | Containerização | Docker + Docker Compose |
@@ -51,6 +70,7 @@ API REST para gerenciar agendamentos de barbearia. Permite cadastro de usuários
 ```
 projetoapi/
 ├── app/
+<<<<<<< HEAD
 │   ├── __init__.py          # Pacote da aplicação
 │   ├── main.py              # Rotas, dependências e instância do FastAPI
 │   ├── database.py          # Engine SQLAlchemy e sessão do banco
@@ -71,6 +91,25 @@ projetoapi/
 ├── requirements.txt         # Dependências Python
 ├── .env.example             # Template de variáveis de ambiente
 └── .gitignore
+=======
+│   ├── main.py          # Rotas e configuração da aplicação
+│   ├── database.py      # Engine e sessão do banco (SQLite ou PostgreSQL)
+│   ├── models.py        # Modelos SQLAlchemy (User, Servico, Agendamento)
+│   ├── schemas.py       # Schemas Pydantic para validação
+│   └── utils.py         # Utilitários de segurança (hash + JWT)
+├── tests/
+│   ├── conftest.py      # Fixtures de teste (banco em memória, clientes HTTP)
+│   ├── test_rotas.py    # Testes de criação de usuário
+│   ├── test_login.py    # Testes de autenticação
+│   ├── test_servicos.py # Testes de serviços e permissões
+│   ├── test_agendamentos.py # Testes de agendamento e validações
+│   └── test_utils.py    # Testes de hash de senhas e JWT
+├── dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── .env.example
+└── README.md
+>>>>>>> da1d5d19bf44e9a04828853f112160f82fe71e02
 ```
 
 ---
@@ -79,7 +118,11 @@ projetoapi/
 
 ### Pré-requisitos
 
+<<<<<<< HEAD
 - [Docker](https://docs.docker.com/get-docker/) e [Docker Compose](https://docs.docker.com/compose/install/)
+=======
+- [Docker](https://docs.docker.com/get-docker/) e [Docker Compose](https://docs.docker.com/compose/install/) instalados
+>>>>>>> da1d5d19bf44e9a04828853f112160f82fe71e02
 
 ### 1. Clone o repositório
 
@@ -90,10 +133,19 @@ cd projetoapi
 
 ### 2. Configure as variáveis de ambiente
 
+<<<<<<< HEAD
 ```bash
 cp .env.example .env
 ```
 
+=======
+Crie um arquivo `.env` na raiz do projeto:
+
+```bash
+cp .env.example .env
+```
+
+>>>>>>> da1d5d19bf44e9a04828853f112160f82fe71e02
 Edite o `.env` com seus valores:
 
 ```env
@@ -112,6 +164,7 @@ docker-compose up --build
 
 A API estará disponível em: **http://localhost:8001/docs**
 
+<<<<<<< HEAD
 ---
 
 ## Variáveis de ambiente
@@ -246,4 +299,51 @@ pytest --cov=app tests/
 
 Feito com dedicação por [H1lbert-kt](https://github.com/H1lbert-kt)
 
+=======
+> A documentação interativa do Swagger será aberta automaticamente no navegador.
+
+---
+
+## Endpoints
+
+| Método | Rota | Autenticação | Descrição |
+|--------|------|:------------:|-----------|
+| `POST` | `/usuarios/` | Não | Criar novo usuário |
+| `POST` | `/login` | Não | Fazer login e receber token JWT |
+| `GET` | `/usuarios/listar/` | Admin | Listar todos os usuários |
+| `GET` | `/servicos/listar_ativos/` | Não | Listar serviços ativos |
+| `POST` | `/servicos/` | Admin | Criar novo serviço |
+| `DELETE` | `/servicos/{id}` | Admin | Desativar serviço |
+| `POST` | `/agendamentos/` | Usuário | Criar agendamento |
+| `POST` | `/agendamento/cancelar/{id}` | Usuário | Cancelar agendamento |
+| `GET` | `/agendamentos/meus/` | Usuário | Listar meus agendamentos |
+
+---
+
+## Regras de negócio
+
+- **Horário comercial:** Agendamentos só entre 08h e 20h
+- **Sem agendamento no passado:** Data e hora devem ser futuras
+- **Serviço ativo obrigatório:** Só é possível agendar serviços ativos
+- **Sem conflitos:** Dois agendamentos no mesmo horário para o mesmo serviço são bloqueados
+- **Dupla reserva:** Um usuário não pode ter dois agendamentos no mesmo horário
+- **Preço congelado:** O valor pago é registrado no momento do agendamento, não mudando se o preço do serviço for alterado depois
+
+---
+
+## Testes
+
+Para rodar os testes localmente (sem Docker):
+
+```bash
+# Crie um venv e instale as dependências
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Execute os testes
+pytest --cov=app tests/
+```
+
+>>>>>>> da1d5d19bf44e9a04828853f112160f82fe71e02
 </div>

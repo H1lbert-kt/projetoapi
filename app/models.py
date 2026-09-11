@@ -7,7 +7,7 @@ class User(Base):
 
     id = Column(Integer, autoincrement=True, primary_key=True)
     nome = Column(String, nullable=False)
-    email = Column(String, index=True, nullable=False)
+    email = Column(String, index=True, unique=True, nullable=False)
     senha = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False)
 
@@ -21,7 +21,7 @@ class Agendamento(Base):
     servico_id = Column(Integer, ForeignKey("servicos.id"))
     servico = relationship("Servico")
     preco_pago = Column(Float, nullable=False)
-    status = Column(String, nullable=True, default="confirmado")
+    status = Column(String, nullable=False, default="confirmado")
 
 
 class Servico(Base):
