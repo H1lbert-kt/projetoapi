@@ -17,6 +17,12 @@
 
 API REST para gerenciar agendamentos de barbearia. Permite cadastro de usuários, autenticação via JWT, catálogo de serviços com CRUD e agendamentos com validações de horário, conflitos e permissões.
 
+### API Online
+
+🔗 **https://projetoapi-sziu.onrender.com/docs**
+
+![Swagger UI](Captura%20de%20tela%20de%202026-09-11%2010-24-08.png)
+
 ---
 
 ## Funcionalidades
