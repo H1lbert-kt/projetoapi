@@ -17,6 +17,12 @@
 
 API REST para gerenciar agendamentos de barbearia. Permite cadastro de usuários, autenticação via JWT, catálogo de serviços com CRUD e agendamentos com validações de horário, conflitos e permissões.
 
+### API Online
+
+🔗 **https://projetoapi-sziu.onrender.com/docs**
+
+![Swagger UI](docs/screenshot.png)
+
 ---
 
 ## Funcionalidades
@@ -69,6 +75,8 @@ projetoapi/
 ├── dockerfile               # Build da imagem Python
 ├── docker-compose.yml       # Orchestration: PostgreSQL + API
 ├── requirements.txt         # Dependências Python
+├── docs/
+│   └── screenshot.png       # Screenshot da API no Swagger
 ├── .env.example             # Template de variáveis de ambiente
 └── .gitignore
 ```
