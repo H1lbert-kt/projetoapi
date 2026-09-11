@@ -70,8 +70,7 @@ projetoapi/
 │   ├── test_login.py        # Testes de autenticação
 │   ├── test_servicos.py     # Testes de serviços e permissões
 │   ├── test_agendamentos.py # Testes de agendamento e validações
-│   ├── test_utils.py        # Testes de hash de senhas e JWT
-│   └── test_usuarios.py     # (vazio — placeholder)
+│   └── test_utils.py        # Testes de hash de senhas e JWT
 ├── dockerfile               # Build da imagem Python
 ├── docker-compose.yml       # Orchestration: PostgreSQL + API
 ├── requirements.txt         # Dependências Python
