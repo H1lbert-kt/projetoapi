@@ -5,9 +5,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from .utils import gerar_hash, verificar_senha, criar_token_acesso, verificar_token
 from . import models, schemas
-from .database import engine, SessionLocal
-
-models.Base.metadata.create_all(bind=engine)
+from .database import SessionLocal
 
 app = FastAPI()
 

@@ -47,6 +47,7 @@ API REST para gerenciar agendamentos de barbearia. Permite cadastro de usuários
 | Senhas | Argon2id |
 | Autenticação | JWT via python-jose |
 | Validação | Pydantic v2 |
+| Migrations | Alembic |
 | Containerização | Docker + Docker Compose |
 | Testes | pytest + pytest-cov |
 
@@ -71,6 +72,12 @@ projetoapi/
 │   ├── test_servicos.py     # Testes de serviços e permissões
 │   ├── test_agendamentos.py # Testes de agendamento e validações
 │   └── test_utils.py        # Testes de hash de senhas e JWT
+├── alembic/
+│   ├── env.py               # Configuração do Alembic
+│   ├── script.py.mako       # Template para novas migrations
+│   └── versions/            # Scripts de migração
+│       └── 3fe0c0ec72a4_criar_tabelas_iniciais.py
+├── alembic.ini              # Configuração do Alembic
 ├── dockerfile               # Build da imagem Python
 ├── docker-compose.yml       # Orchestration: PostgreSQL + API
 ├── requirements.txt         # Dependências Python
@@ -118,6 +125,39 @@ docker-compose up --build
 ```
 
 A API estará disponível em: **http://localhost:8001/docs**
+
+### 4. Execute as migrações do banco
+
+```bash
+alembic upgrade head
+```
+
+Isso cria todas as tabelas definidas nos models.
+
+---
+
+## Migrations
+
+O projeto utiliza Alembic para gerenciar migrações do banco de dados.
+
+### Comandos úteis
+
+```bash
+# Aplicar todas as migrations pendentes
+alembic upgrade head
+
+# Voltar uma migration
+alembic downgrade -1
+
+# Criar uma nova migration após alterar os models
+alembic revision --autogenerate -m "descrição_da_mudança"
+
+# Verificar a migration atual
+alembic current
+
+# Ver histórico de migrations
+alembic history
+```
 
 ---
 
@@ -224,6 +264,7 @@ A API estará disponível em: **http://localhost:8001/docs**
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+alembic upgrade head
 pytest --cov=app tests/
 ```
 
