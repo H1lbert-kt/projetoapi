@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.fixture
 def obter_headers(cliente):
     cliente.post("/usuarios/", json={

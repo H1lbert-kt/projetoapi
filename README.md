@@ -6,6 +6,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.136-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![CI](https://github.com/H1lbert-kt/projetoapi/actions/workflows/ci.yml/badge.svg)](https://github.com/H1lbert-kt/projetoapi/actions/workflows/ci.yml)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 
@@ -81,6 +82,11 @@ projetoapi/
 ├── dockerfile               # Build da imagem Python
 ├── docker-compose.yml       # Orchestration: PostgreSQL + API
 ├── requirements.txt         # Dependências Python
+├── requirements-dev.txt     # Dependências de desenvolvimento (ruff)
+├── ruff.toml                # Configuração do linter
+├── .github/
+│   └── workflows/
+│       └── ci.yml           # Pipeline: lint, testes, migrations e Docker
 ├── docs/
 │   └── screenshot.png       # Screenshot da API no Swagger
 ├── .env.example             # Template de variáveis de ambiente
@@ -268,6 +274,13 @@ alembic upgrade head
 pytest --cov=app tests/
 ```
 
+### Lint
+
+```bash
+pip install -r requirements-dev.txt
+ruff check .
+```
+
 ### Estrutura dos testes
 
 | Arquivo | Cobertura |
@@ -277,6 +290,20 @@ pytest --cov=app tests/
 | `test_servicos.py` | Listar serviços, criar serviço (admin), permissão negada (user) |
 | `test_agendamentos.py` | Agendamento válido, data passada, horário comercial, conflito, cancelamento |
 | `test_utils.py` | Hash/verificação de senha, criação/verificação de JWT, token expirado |
+
+---
+
+## Integração contínua
+
+O workflow em `.github/workflows/ci.yml` roda a cada push nas branches `master`/`main` e em todo Pull Request:
+
+| Job | O que valida |
+|-----|--------------|
+| `Lint` | `ruff check .` conforme o `ruff.toml` |
+| `Testes` | `alembic upgrade head` + `alembic check` (migrations) e `pytest` com cobertura mínima de 80% em Python 3.11, 3.12 e 3.13 |
+| `Docker` | `docker compose config`, build da imagem e smoke test da API (`/openapi.json`) |
+
+O relatório de cobertura (`coverage.xml`) fica disponível como artifact de cada execução.
 
 ---
 

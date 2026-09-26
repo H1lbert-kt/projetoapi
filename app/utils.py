@@ -1,9 +1,10 @@
-from dotenv import load_dotenv
 import os
-from datetime import timedelta, datetime, timezone
-from jose import jwt, JWTError
+from datetime import UTC, datetime, timedelta
+
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
+from dotenv import load_dotenv
+from jose import JWTError, jwt
 
 load_dotenv()
 
@@ -20,14 +21,14 @@ def gerar_hash(senha: str):
 def verificar_senha(senha_plana: str, senha_hasheada: str):
    try:
        return ph.verify(senha_hasheada, senha_plana)
-   
+
    except VerifyMismatchError:
        return False
 
 
 
 def criar_token_acesso(id_usuario):
-    data_expiracao = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    data_expiracao = datetime.now(UTC) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     dados = {"user_id": id_usuario,
              "exp": data_expiracao}
     jwt_codificado = jwt.encode(dados, SECRET_KEY, ALGORITHM)

@@ -3,10 +3,12 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from app.main import app as fastapi_app, get_db
-from app.utils import gerar_hash
-from app.database import Base
+
 from app import models
+from app.database import Base
+from app.main import app as fastapi_app
+from app.main import get_db
+from app.utils import gerar_hash
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 
@@ -69,7 +71,7 @@ def headers_admin(cliente, db_session):
     )
     db_session.add(user)
     db_session.commit()
-    
+
     res = cliente.post("/login", data={"username": "admin@teste.com", "password": "123456"})
     token = res.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}

@@ -1,5 +1,7 @@
+from datetime import UTC, datetime
+
 from pydantic import BaseModel, EmailStr, field_validator
-from datetime import datetime, timezone
+
 
 class UserCreate(BaseModel):
     nome: str
@@ -21,7 +23,7 @@ class AgendamentoCreate(BaseModel):
     @classmethod
     def garantir_utc(cls, v):
         if v.tzinfo is None:
-            return v.replace(tzinfo=timezone.utc)
+            return v.replace(tzinfo=UTC)
         return v
 
 class AgendamentoOut(BaseModel):

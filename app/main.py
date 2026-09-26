@@ -1,11 +1,12 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
-from datetime import datetime, timezone
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from datetime import UTC, datetime
 
-from .utils import gerar_hash, verificar_senha, criar_token_acesso, verificar_token
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+
 from . import models, schemas
 from .database import SessionLocal
+from .utils import criar_token_acesso, gerar_hash, verificar_senha, verificar_token
 
 app = FastAPI()
 
@@ -22,7 +23,7 @@ def obter_usuario(db: Session = Depends(get_db), token: str = Depends(oauth2_sch
     verificacao = verificar_token(token)
     if verificacao is None:
         raise HTTPException(status_code=401, detail="Token inválido.")
-    
+
     usuario = db.query(models.User).filter(models.User.id == verificacao).first()
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuário não encontrado.")
@@ -41,11 +42,11 @@ def login(login_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
     usuario = db.query(models.User).filter(models.User.email == login_data.username).first()
     if not usuario:
         raise HTTPException(status_code=401, detail="Email ou senha inválidos.")
-    
+
     senha_valida = verificar_senha(login_data.password, usuario.senha)
     if not senha_valida:
         raise HTTPException(status_code=401, detail="Email ou senha inválidos.")
-    
+
     token = criar_token_acesso(usuario.id)
     return {"access_token": token, "token_type": "Bearer"}
 
@@ -54,10 +55,10 @@ def criar_usuario(usuario: schemas.UserCreate, db: Session = Depends(get_db)):
     email_existe = db.query(models.User).filter(models.User.email == usuario.email).first()
     if email_existe:
         raise HTTPException(status_code=400, detail="Email já cadastrado.")
-    
+
     novo_usuario = models.User(
-        nome=usuario.nome, 
-        email=usuario.email, 
+        nome=usuario.nome,
+        email=usuario.email,
         senha=gerar_hash(usuario.senha)
     )
     db.add(novo_usuario)
@@ -72,15 +73,19 @@ def listar_usuario(db: Session = Depends(get_db), admin = Depends(verificar_admi
 
 @app.get("/servicos/listar_ativos/", tags=["Operações"], response_model=list[schemas.ServicoOut])
 def listar_servicos_ativos(db: Session = Depends(get_db)):
-    servicos = db.query(models.Servico).filter(models.Servico.ativo == True).all()
+    servicos = db.query(models.Servico).filter(models.Servico.ativo.is_(True)).all()
     return servicos
 
 @app.post("/servicos/", tags=["Administração"], response_model=schemas.ServicoOut)
-def criar_servico(servico_criar: schemas.ServicoCreate, db: Session = Depends(get_db), admin = Depends(verificar_admin)):
+def criar_servico(
+    servico_criar: schemas.ServicoCreate,
+    db: Session = Depends(get_db),
+    admin = Depends(verificar_admin),
+):
     servico = db.query(models.Servico).filter(models.Servico.nome == servico_criar.nome).first()
     if servico:
         raise HTTPException(status_code=400, detail="O serviço já existe.")
-    
+
     novo_servico = models.Servico(nome=servico_criar.nome, preco=servico_criar.preco)
     db.add(novo_servico)
     db.commit()
@@ -88,11 +93,15 @@ def criar_servico(servico_criar: schemas.ServicoCreate, db: Session = Depends(ge
     return novo_servico
 
 @app.delete("/servicos/{servico_id}", tags=["Administração"])
-def deletar_servico(servico_id: int, db: Session = Depends(get_db), admin = Depends(verificar_admin)):
+def deletar_servico(
+    servico_id: int,
+    db: Session = Depends(get_db),
+    admin = Depends(verificar_admin),
+):
     servico = db.query(models.Servico).filter(models.Servico.id == servico_id).first()
     if not servico:
         raise HTTPException(status_code=404, detail="Serviço não encontrado.")
-    
+
     servico.ativo = False
     db.commit()
     return {"detail": "Serviço desativado com sucesso."}
@@ -103,9 +112,12 @@ def agendamento(
     db: Session = Depends(get_db),
     usuario_atual: models.User = Depends(obter_usuario)
 ):
-    if agendamento_in.data < datetime.now(timezone.utc):
-        raise HTTPException(status_code=400, detail="A data do agendamento não pode ser no passado.")
-    
+    if agendamento_in.data < datetime.now(UTC):
+        raise HTTPException(
+            status_code=400,
+            detail="A data do agendamento não pode ser no passado.",
+        )
+
     if agendamento_in.data.hour >= 21 or agendamento_in.data.hour <= 7:
         raise HTTPException(
             status_code=400,
@@ -114,21 +126,21 @@ def agendamento(
 
     servico = db.query(models.Servico).filter(
         models.Servico.id == agendamento_in.servico_id,
-        models.Servico.ativo == True
+        models.Servico.ativo.is_(True)
     ).first()
-    
+
     if not servico:
         raise HTTPException(status_code=404, detail="Serviço não encontrado.")
-    
+
     conflito = db.query(models.Agendamento).filter(
         models.Agendamento.servico_id == agendamento_in.servico_id,
         models.Agendamento.data == agendamento_in.data,
         models.Agendamento.status == "confirmado"
     ).first()
-    
+
     if conflito:
         raise HTTPException(status_code=400, detail="Este horário já está reservado.")
-    
+
     conflito_usuario = db.query(models.Agendamento).filter(
         models.Agendamento.usuario_id == usuario_atual.id,
         models.Agendamento.data == agendamento_in.data,
@@ -140,7 +152,7 @@ def agendamento(
             status_code=400,
             detail="Você já possui um agendamento neste horário."
         )
-    
+
     novo = models.Agendamento(
         preco_pago=servico.preco,
         servico_id=servico.id,
@@ -152,21 +164,31 @@ def agendamento(
     db.refresh(novo)
     return novo
 
-@app.post("/agendamentos/cancelar/{agendamento_id}", response_model=schemas.AgendamentoOut, tags=["Operações"])
-def cancelar_agendamento(agendamento_id: int, db: Session = Depends(get_db), usuario_atual = Depends(obter_usuario)):
-    buscar_agendamento = db.query(models.Agendamento).filter(models.Agendamento.id == agendamento_id).first()
+@app.post(
+    "/agendamentos/cancelar/{agendamento_id}",
+    response_model=schemas.AgendamentoOut,
+    tags=["Operações"],
+)
+def cancelar_agendamento(
+    agendamento_id: int,
+    db: Session = Depends(get_db),
+    usuario_atual = Depends(obter_usuario),
+):
+    buscar_agendamento = (
+        db.query(models.Agendamento).filter(models.Agendamento.id == agendamento_id).first()
+    )
     if not buscar_agendamento:
         raise HTTPException(
             status_code=404,
             detail="Agendamento não encontrado."
         )
-    
+
     if usuario_atual.id != buscar_agendamento.usuario_id and not usuario_atual.is_admin:
         raise HTTPException(
             status_code=403,
             detail="Você não tem permissão para realizar este processo."
         )
-    
+
     if buscar_agendamento.status == "cancelado":
         raise HTTPException(
             status_code=400,
@@ -179,7 +201,10 @@ def cancelar_agendamento(agendamento_id: int, db: Session = Depends(get_db), usu
     return buscar_agendamento
 
 @app.get("/agendamentos/meus/", tags=["Operações"], response_model=list[schemas.AgendamentoOut])
-def meus_agendamentos(usuario_atual: models.User = Depends(obter_usuario), db: Session = Depends(get_db)):
+def meus_agendamentos(
+    usuario_atual: models.User = Depends(obter_usuario),
+    db: Session = Depends(get_db),
+):
     agendamento_meus = db.query(models.Agendamento).filter(
         models.Agendamento.usuario_id == usuario_atual.id,
           models.Agendamento.status == "confirmado"

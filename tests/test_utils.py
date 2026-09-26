@@ -1,7 +1,16 @@
-import pytest
-from datetime import timedelta, datetime, timezone
-from app.utils import gerar_hash, verificar_senha, criar_token_acesso, verificar_token, SECRET_KEY, ALGORITHM
+from datetime import UTC, datetime, timedelta
+
 from jose import jwt
+
+from app.utils import (
+    ALGORITHM,
+    SECRET_KEY,
+    criar_token_acesso,
+    gerar_hash,
+    verificar_senha,
+    verificar_token,
+)
+
 
 def test_gerar_hash_e_verificar_senha_sucesso():
     senha_plana = "minhasenha123"
@@ -34,7 +43,7 @@ def test_verificar_token_invalido():
     assert resultado is None
 
 def test_verificar_token_expirado():
-    data_passada = datetime.now(timezone.utc) - timedelta(minutes=10)
+    data_passada = datetime.now(UTC) - timedelta(minutes=10)
     payload_expirado = {
         "user_id": 99,
         "exp": data_passada

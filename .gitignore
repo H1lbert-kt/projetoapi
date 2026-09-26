@@ -7,5 +7,9 @@ venv/
 *.db
 *.sqlite3
 .coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+.ruff_cache/
 .vscode/
 .idea/
